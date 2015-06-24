@@ -3,6 +3,7 @@ package com.incendiary.reactivegplus;
 import android.app.Activity;
 import android.content.Context;
 
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.Api;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -27,7 +28,7 @@ public class GMSProvider {
 
 	private final Context mContext;
 
-	private boolean isLoginResolved;
+	private Boolean isLoginResolved;
 
 	public static GMSProvider newInstance(Activity activity) {
 		return new GMSProvider(activity);
@@ -53,10 +54,13 @@ public class GMSProvider {
 						return observable.flatMap(new Func1<Throwable, Observable<?>>() {
 							@Override
 							public Observable<?> call(Throwable throwable) {
-								if (throwable instanceof GoogleAPIConnectionException && !isLoginResolved) {
+								if (throwable instanceof GoogleAPIConnectionException) {
 									GoogleAPIConnectionException exception = (GoogleAPIConnectionException) throwable;
-									GoogleLoginUtils.resolve((Activity) mContext, exception.getConnectionResult());
-									return Observable.timer(5, TimeUnit.SECONDS);
+									if (exception.getConnectionResult().getErrorCode() == ConnectionResult.SIGN_IN_REQUIRED) {
+										if (isLoginResolved == null || isLoginResolved)
+											GoogleLoginUtils.resolve((Activity) mContext, exception.getConnectionResult());
+										return Observable.timer(1, TimeUnit.SECONDS);
+									}
 								}
 								return Observable.error(throwable);
 							}

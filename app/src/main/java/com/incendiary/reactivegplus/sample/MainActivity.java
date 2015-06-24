@@ -46,6 +46,12 @@ public class MainActivity extends Activity {
 				TextView textView = (TextView) findViewById(R.id.txt);
 				textView.setText(person.getId());
 			}
+		}, new Action1<Throwable>() {
+			@Override
+			public void call(Throwable throwable) {
+				// this shouldn't happen
+				throwable.printStackTrace();
+			}
 		});
 	}
 
