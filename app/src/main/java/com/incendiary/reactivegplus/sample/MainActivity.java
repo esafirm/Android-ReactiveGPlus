@@ -50,6 +50,7 @@ public class MainActivity extends Activity {
 			@Override
 			public void call(Throwable throwable) {
 				// this shouldn't happen
+				toast("Error:" + throwable);
 				throwable.printStackTrace();
 			}
 		});

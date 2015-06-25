@@ -9,6 +9,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.Result;
 import com.google.android.gms.common.api.Scope;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.plus.People;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 
@@ -74,6 +76,33 @@ public class GMSProvider {
 			@Override
 			public Observable<Person> call(GoogleApiClient googleApiClient) {
 				return Observable.just(Plus.PeopleApi.getCurrentPerson(googleApiClient));
+			}
+		});
+	}
+
+	public final Observable<People.LoadPeopleResult> getPeopleObservable(final String token) {
+		return getLoginObserveable().flatMap(new Func1<GoogleApiClient, Observable<People.LoadPeopleResult>>() {
+			@Override
+			public Observable<People.LoadPeopleResult> call(GoogleApiClient googleApiClient) {
+				return fromPendingResult(Plus.PeopleApi.loadVisible(googleApiClient, token));
+			}
+		});
+	}
+
+	public final Observable<String> getAccountNameObservable() {
+		return getLoginObserveable().flatMap(new Func1<GoogleApiClient, Observable<String>>() {
+			@Override
+			public Observable<String> call(GoogleApiClient googleApiClient) {
+				return Observable.just(Plus.AccountApi.getAccountName(googleApiClient));
+			}
+		});
+	}
+
+	public final Observable<Status> getRevokeAccessObservable() {
+		return getLoginObserveable().flatMap(new Func1<GoogleApiClient, Observable<Status>>() {
+			@Override
+			public Observable<Status> call(GoogleApiClient googleApiClient) {
+				return fromPendingResult(Plus.AccountApi.revokeAccessAndDisconnect(googleApiClient));
 			}
 		});
 	}
