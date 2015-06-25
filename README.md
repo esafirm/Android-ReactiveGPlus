@@ -16,7 +16,7 @@ repositories {
 	    }
 	}
 		dependencies {
-	        compile 'com.github.esafirm:Android-ReactiveGPlus:42b8f1be17'
+	        compile 'com.github.esafirm:Android-ReactiveGPlus:(insert commit here)'
 	}
 ```
 
