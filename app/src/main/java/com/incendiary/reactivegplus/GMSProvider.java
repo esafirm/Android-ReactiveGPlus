@@ -59,8 +59,10 @@ public class GMSProvider {
 								if (throwable instanceof GoogleAPIConnectionException) {
 									GoogleAPIConnectionException exception = (GoogleAPIConnectionException) throwable;
 									if (exception.getConnectionResult().getErrorCode() == ConnectionResult.SIGN_IN_REQUIRED) {
-										if (isLoginResolved == null || isLoginResolved)
+										if (isLoginResolved == null || isLoginResolved) {
+											isLoginResolved = false;
 											GoogleLoginUtils.resolve((Activity) mContext, exception.getConnectionResult());
+										}
 										return Observable.timer(1, TimeUnit.SECONDS);
 									}
 								}
